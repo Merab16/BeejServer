@@ -172,7 +172,6 @@ private:
                             char non[] = "-n";
                             if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
-                                
                             }
                             else {
                                 send(i, non, sizeof non, NULL);
@@ -224,6 +223,7 @@ private:
 
     bool CheckUser(const std::string& lg, const std::string& pw) {
         if (_users_from_db.count(lg) && _users_from_db[lg] == pw) {
+            std::cout << "true\n";
             return true;
         }
         return false;
