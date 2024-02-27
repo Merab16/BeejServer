@@ -30,7 +30,7 @@ private:
 
     // DB
     std::map<std::string, std::string> _users_from_db;
-
+    std::string _lg, _pw;
 
     // server 
     fd_set _master;
@@ -151,15 +151,15 @@ private:
                         close(i); // bye!
                         FD_CLR(i, &_master); // remove from master set
                     } else {
-                        std::string lg , pw;
-                        if (lg.empty()) {
-                            lg = _buf;
+                        
+                        if (_lg.empty()) {
+                            _lg = _buf;
                         }
                         else {
-                            pw = _buf;
+                            _pw = _buf;
                             char success[] = "-y";
                             char non[] = "-n";
-                            if (CheckUser(lg, pw)) {
+                            if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
                                 
                             }
@@ -167,7 +167,8 @@ private:
                                 send(i, non, sizeof non, NULL);
                             }
                         }
-                        
+                        _lg.clear();
+                        _pw.clear();
                         
 
 
