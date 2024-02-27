@@ -227,7 +227,7 @@ private:
         std::cout << "Recieved: " << lg << ' ' << pw << std::endl;
         if (_users_from_db.count(lg)) {
             std::cout << "Login true\n";
-            return _users_from_db[lg] == pw;
+            return (_users_from_db.at(lg) == pw);
         }
         return false;
     }
