@@ -152,17 +152,20 @@ private:
                         FD_CLR(i, &_master); // remove from master set
                     } else {
                         //std::cout << _buf << std::endl;
+
                         bool isLogin = true;
                             for (const auto& ch: _buf) {
                                 if (ch == ' ') {
                                     isLogin = false;
                                     continue;
+                                    std::cout << int(ch) << std::endl;
                                 }
                                 if (isLogin) {
                                     _lg += ch;
                                 }
                                 else {
                                     _pw += ch;
+                                    std::cout << int(ch) << std::endl;
                                 }
 
                             }
