@@ -10,6 +10,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <iostream>
 
 #define PORT "9034"   // port we're listening on
 
@@ -151,7 +152,7 @@ private:
                         close(i); // bye!
                         FD_CLR(i, &_master); // remove from master set
                     } else {
-                        
+                        std::cout << _buf << std::endl;
                         if (_lg.empty()) {
                             _lg = _buf;
                         }
