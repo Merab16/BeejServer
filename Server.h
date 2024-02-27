@@ -24,7 +24,6 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-
 class Server {
 
 private:
@@ -167,7 +166,7 @@ private:
                                 }
 
                             }
-
+                            std::cout << "Parsed: " << _lg << ' ' << _pw << std::endl;
 
                             char success[] = "-y";
                             char non[] = "-n";
@@ -212,6 +211,12 @@ private:
             fin >> lg >> pw;
             _users_from_db.emplace(lg, pw);
         }
+
+
+        for (const auto& [lg, pw]: _users_from_db) {
+            std::cout << lg << ' ' << pw << std::endl;
+        }
+
 
         fin.close();
 
