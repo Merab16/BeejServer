@@ -222,8 +222,11 @@ private:
 
     }
 
-    bool CheckUser(const std::string& lg, std::string& pw) {
+    bool CheckUser(const std::string& lg, const std::string& pw) {
+        std::cout << "CheckUser:\n";
+        std::cout << "Recieved: " << lg << ' ' << pw << std::endl;
         if (_users_from_db.count(lg)) {
+            std::cout << "Login true\n";
             return _users_from_db[lg] == pw;
         }
         return false;
