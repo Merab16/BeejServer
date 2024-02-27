@@ -152,12 +152,23 @@ private:
                         close(i); // bye!
                         FD_CLR(i, &_master); // remove from master set
                     } else {
-                        std::cout << _buf << std::endl;
-                        if (_lg.empty()) {
-                            _lg = _buf;
-                        }
-                        else {
-                            _pw = _buf;
+                        //std::cout << _buf << std::endl;
+                        bool isLogin = true;
+                            for (const auto& ch: _buf) {
+                                if (ch == ' ') {
+                                    isLogin = false;
+                                    continue;
+                                }
+                                if (isLogin) {
+                                    _lg += ch;
+                                }
+                                else {
+                                    _pw += ch;
+                                }
+
+                            }
+
+
                             char success[] = "-y";
                             char non[] = "-n";
                             if (CheckUser(_lg, _pw)) {
@@ -167,7 +178,7 @@ private:
                             else {
                                 send(i, non, sizeof non, NULL);
                             }
-                        }
+                        
                         _lg.clear();
                         _pw.clear();
                         
