@@ -183,16 +183,18 @@ private:
                             char non[] = "-n";
                             char already_login[] = "User has been already login";
                             if (CheckUser(_lg, _pw)) {
-                                send(i, success, sizeof success, NULL);
+                                
                                 if (!_accepted_users.count(_lg)) {
+                                    send(i, success, sizeof success, NULL);
                                     std::cout << "Add users\n";
                                     _accepted_users.emplace(_lg, i);
+                                    //FD_CLR(i, &_master); // remove from master set
                                 }
                                 else {
                                     std::cout << "Alreay login\n";
                                     send(i, already_login, sizeof already_login, NULL);
                                 }
-                                FD_CLR(i, &_master); // remove from master set
+                              
                             }
                             else {
                                 send(i, non, sizeof non, NULL);
