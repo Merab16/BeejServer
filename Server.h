@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <set>
 
 #define PORT "9034"   // port we're listening on
 
@@ -31,6 +32,7 @@ private:
     // DB
     std::map<std::string, std::string> _users_from_db;
     std::string _lg, _pw;
+    std::set<int> _accepted_connections;
 
     // server 
     fd_set _master;
@@ -92,7 +94,7 @@ private:
         freeaddrinfo(_ai); // all done with this
 
         // listen
-        if (listen(_listener, 10) == -1) {
+        if (listen(_listener, 2) == -1) {
             perror("listen");
             exit(3);
         }
@@ -138,7 +140,7 @@ private:
 							_newfd);
                     }
                 } else {
-                    // handle data from a clientdfdfdf
+                    // handle data from a client
                     int nbytes;
                     if ((nbytes = recv(i, _buf, sizeof _buf, 0)) <= 0) {
                         // got error or connection closed by client
@@ -149,7 +151,10 @@ private:
                             perror("recv");
                         }
                         close(i); // bye!
-                        FD_CLR(i, &_master); // remove from master set
+                        if (FD_ISSET(i, &_master)) {
+                            FD_CLR(i, &_master); // remove from master set
+                        }                        
+                        _accepted_connections.erase(i);
                     } else {
                         //std::cout << _buf << std::endl;
 
@@ -168,12 +173,15 @@ private:
                                 }
 
                             }
-                            std::cout << "Parsed: " << _lg << ' ' << _pw << std::endl;
+                            //std::cout << "Parsed: " << _lg << ' ' << _pw << std::endl;
 
                             char success[] = "-y";
                             char non[] = "-n";
                             if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
+
+                                _accepted_connections.emplace(i);
+                                FD_CLR(i, &_master); // remove from master set
                             }
                             else {
                                 send(i, non, sizeof non, NULL);
@@ -183,21 +191,6 @@ private:
                         _pw.clear();
                         
 
-
-
-                        // int j;
-                        // // we got some data from a client
-                        // for(j = 0; j <= _fdmax; j++) {
-                        //     // send to everyone!
-                        //     if (FD_ISSET(j, &_master)) {
-                        //         // except the listener and ourselves
-                        //         if (j != _listener && j != i) {
-                        //             if (send(j, _buf, nbytes, 0) == -1) {
-                        //                 perror("send");
-                        //             }
-                        //         }
-                        //     }
-                        // }
                     }
                 } // END handle data from client
             } // END got new incoming connection
@@ -249,5 +242,4 @@ public:
 
 
 };
-
 
