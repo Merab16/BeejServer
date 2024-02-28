@@ -185,9 +185,11 @@ private:
                             if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
                                 if (!_accepted_users.count(_lg)) {
+                                    std::cout << "Add users\n";
                                     _accepted_users.emplace(_lg, i);
                                 }
                                 else {
+                                    std::cout << "Alreay login\n";
                                     send(i, already_login, sizeof already_login, NULL);
                                 }
                                 FD_CLR(i, &_master); // remove from master set
