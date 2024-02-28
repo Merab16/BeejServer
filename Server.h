@@ -177,10 +177,15 @@ private:
 
                             char success[] = "-y";
                             char non[] = "-n";
+                            char already_login[] = "User has been already login";
                             if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
-
-                                _accepted_connections.emplace(i);
+                                if (!_accepted_connections.count(i)) {
+                                    _accepted_connections.emplace(i);
+                                }
+                                else {
+                                    send(i, already_login, sizeof already_login, NULL);
+                                }
                                 FD_CLR(i, &_master); // remove from master set
                             }
                             else {
