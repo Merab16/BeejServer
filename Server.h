@@ -32,7 +32,7 @@ private:
     // DB
     std::map<std::string, std::string> _users_from_db;
     std::string _lg, _pw;
-    std::set<int> _accepted_connections;
+    std::map<int, std::string> _accepted_users;
 
     // server 
     fd_set _master;
@@ -154,7 +154,7 @@ private:
                         if (FD_ISSET(i, &_master)) {
                             FD_CLR(i, &_master); // remove from master set
                         }                        
-                        _accepted_connections.erase(i);
+                        _accepted_users.erase(i);
                     } else {
                         //std::cout << _buf << std::endl;
 
@@ -180,8 +180,8 @@ private:
                             char already_login[] = "User has been already login";
                             if (CheckUser(_lg, _pw)) {
                                 send(i, success, sizeof success, NULL);
-                                if (!_accepted_connections.count(i)) {
-                                    _accepted_connections.emplace(i);
+                                if (!_accepted_users.count(i)) {
+                                    _accepted_users.emplace(i, _lg);
                                 }
                                 else {
                                     send(i, already_login, sizeof already_login, NULL);
