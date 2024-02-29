@@ -161,14 +161,16 @@ private:
                         } else {
                             perror("recv");
                         }
-                        
+
                         for (const auto& [lg, sock]: _accepted_users) {
                             if (sock == i)
                                 _accepted_users.erase(lg);
                         }  
+                        std::cout << "1\n";
                         close(i); // bye!
+                        std::cout << "2\n";
                         FD_CLR(i, &_master); // remove from master set
-                                            
+                        std::cout << "3\n";       
                         
                     } else {
                         //std::cout << _buf << std::endl;
@@ -255,6 +257,7 @@ private:
         std::string lg, pw;
         std::cin >> lg >> pw;
         _users_from_db.emplace(lg, pw);
+        SaveUsers();
     }
 
     
