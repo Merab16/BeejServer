@@ -163,10 +163,10 @@ private:
                             perror("recv");
                         }
                         std::cout << "13\n";
-                        for (const auto& [lg, sock]: _accepted_users) {
-                            if (sock == i)
-                                _accepted_users.erase(lg);
-                        } 
+                        //for (const auto& [lg, sock]: _accepted_users) {
+                        //    if (sock == i)
+                        //        _accepted_users.erase(lg);
+                        //} 
                         std::cout << "14\n"; 
                         std::cout << "1\n";
                         close(i); // bye!
