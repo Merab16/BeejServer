@@ -151,6 +151,7 @@ private:
 							_newfd);
                     }
                 } else {
+                    std::cout << "12\n";
                     // handle data from a client
                     int nbytes;
                     if ((nbytes = recv(i, _buf, sizeof _buf, 0)) <= 0) {
@@ -161,11 +162,12 @@ private:
                         } else {
                             perror("recv");
                         }
-
+                        std::cout << "13\n";
                         for (const auto& [lg, sock]: _accepted_users) {
                             if (sock == i)
                                 _accepted_users.erase(lg);
-                        }  
+                        } 
+                        std::cout << "14\n"; 
                         std::cout << "1\n";
                         close(i); // bye!
                         std::cout << "2\n";
