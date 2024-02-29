@@ -161,14 +161,14 @@ private:
                         } else {
                             perror("recv");
                         }
-                        close(i); // bye!
-                        if (FD_ISSET(i, &_master)) {
-                            FD_CLR(i, &_master); // remove from master set
-                        }  
+                        
                         for (const auto& [lg, sock]: _accepted_users) {
                             if (sock == i)
                                 _accepted_users.erase(lg);
-                        }                      
+                        }  
+                        close(i); // bye!
+                        FD_CLR(i, &_master); // remove from master set
+                                            
                         
                     } else {
                         //std::cout << _buf << std::endl;
