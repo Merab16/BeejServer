@@ -12,6 +12,7 @@
 #include <string>
 #include <iostream>
 #include <set>
+#include <thread>
 
 #define PORT "9034"   // port we're listening on
 
@@ -50,8 +51,18 @@ private:
 	char _remoteIP[INET6_ADDRSTRLEN];
     struct addrinfo _hints, *_ai;
 
+    bool _isWork;
+
 private:
+    void Run() {
+        std::thread th_print_menu(&Server::PrintMenu, this);
+        th_print_menu.detach();
+
+        AcceptConnection();
+    }
+
     void Initialization() {
+        _isWork = true;
         FD_ZERO(&_master);    // clear the _master and temp sets
         FD_ZERO(&_read_fds);
 
@@ -94,7 +105,7 @@ private:
         freeaddrinfo(_ai); // all done with this
 
         // listen
-        if (listen(_listener, 2) == -1) {
+        if (listen(_listener, 10) == -1) {
             perror("listen");
             exit(3);
         }
@@ -107,7 +118,7 @@ private:
     }
 
     void AcceptConnection() {
-        for(;;) {
+        while(_isWork) {
         _read_fds = _master; // copy it
         if (select(_fdmax+1, &_read_fds, NULL, NULL, NULL) == -1) {
             perror("select");
@@ -186,12 +197,10 @@ private:
                                 
                                 if (!_accepted_users.count(_lg)) {
                                     send(i, success, sizeof success, NULL);
-                                    std::cout << "Add users\n";
                                     _accepted_users.emplace(_lg, i);
                                     //FD_CLR(i, &_master); // remove from master set
                                 }
                                 else {
-                                    std::cout << "Alreay login\n";
                                     send(i, already_login, sizeof already_login, NULL);
                                 }
                               
@@ -241,15 +250,58 @@ private:
         return false;
     }
 
+    void AddUser() {
+        std::cout << "Enter login and password: ";
+        std::string lg, pw;
+        std::cin >> lg >> pw;
+        _users_from_db.emplace(lg, pw);
+    }
+
+    
+    void PrintMenu() {
+        while(_isWork) {
+            int i;
+            system("clear");
+            std::cout << "1. Add user\n";
+            std::cout << "2. Exit\n";
+            
+            std::cin >> i;
+            switch (i)
+            {
+            case 1:
+                AddUser();
+                break;
+            case 2:
+                _isWork = false;
+                SaveUsers();
+                exit(0);
+                break;
+            
+            default:
+                break;
+            }
+        }
+    }
+
 public:
     Server() {
         LoadUsers();
         Initialization();
-        AcceptConnection();
+        Run();
     }
 
     ~Server() {
+        SaveUsers();
+    }
 
+    void SaveUsers() {
+        std::ofstream fout("users.txt");
+        int i = 0;
+        for (const auto& [lg, pw]: _users_from_db) {
+            fout << lg << ' ' << pw << std::endl;
+        }
+
+        fout.close();
     }
 
 
