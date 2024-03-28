@@ -151,7 +151,7 @@ private:
 							_newfd);
                     }
                 } else {
-                    std::cout << "12\n";
+                    //std::cout << "12\n";
                     // handle data from a client
                     int nbytes;
                     if ((nbytes = recv(i, _buf, sizeof _buf, 0)) <= 0) {
@@ -172,12 +172,6 @@ private:
                         close(i); // bye!
                         //std::cout << "2\n";
                         FD_CLR(i, &_master); // remove from master set
-                        for (const auto& [lg, sock]: _accepted_users) {
-                            if (i == sock) {
-                                _accepted_users.erase(lg);
-                                break;
-                            }
-                        }
                         //std::cout << "3\n";       
                         
                     } else {
@@ -210,9 +204,9 @@ private:
                                     _accepted_users.emplace(_lg, i);
                                     //FD_CLR(i, &_master); // remove from master set
                                 }
-                                else {
-                                    send(i, already_login, sizeof already_login, NULL);
-                                }
+                                //else {
+                                    //send(i, already_login, sizeof already_login, NULL);
+                                //}
                               
                             }
                             else {
