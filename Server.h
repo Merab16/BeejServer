@@ -162,17 +162,23 @@ private:
                         } else {
                             perror("recv");
                         }
-                        std::cout << "13\n";
+                        //std::cout << "13\n";
                         //for (const auto& [lg, sock]: _accepted_users) {
                         //    if (sock == i)
                         //        _accepted_users.erase(lg);
                         //} 
-                        std::cout << "14\n"; 
-                        std::cout << "1\n";
+                        //std::cout << "14\n"; 
+                        //std::cout << "1\n";
                         close(i); // bye!
-                        std::cout << "2\n";
+                        //std::cout << "2\n";
                         FD_CLR(i, &_master); // remove from master set
-                        std::cout << "3\n";       
+                        for (const auto& [lg, sock]: _accepted_users) {
+                            if (i == sock) {
+                                _accepted_users.erase(lg);
+                                break;
+                            }
+                        }
+                        //std::cout << "3\n";       
                         
                     } else {
                         //std::cout << _buf << std::endl;
