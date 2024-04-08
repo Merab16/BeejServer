@@ -151,7 +151,6 @@ private:
 							_newfd);
                     }
                 } else {
-                    //std::cout << "12\n";
                     // handle data from a client
                     int nbytes;
                     if ((nbytes = recv(i, _buf, sizeof _buf, 0)) <= 0) {
@@ -162,20 +161,10 @@ private:
                         } else {
                             perror("recv");
                         }
-                        //std::cout << "13\n";
-                        //for (const auto& [lg, sock]: _accepted_users) {
-                        //    if (sock == i)
-                        //        _accepted_users.erase(lg);
-                        //} 
-                        //std::cout << "14\n"; 
-                        //std::cout << "1\n";
                         close(i); // bye!
-                        //std::cout << "2\n";
                         FD_CLR(i, &_master); // remove from master set
-                        //std::cout << "3\n";       
                         
                     } else {
-                        //std::cout << _buf << std::endl;
 
                         bool isLogin = true;
                             for (const auto& ch: _buf) {
@@ -202,17 +191,12 @@ private:
                                 if (!_accepted_users.count(_lg)) {
                                     send(i, success, sizeof success, NULL);
                                     _accepted_users.emplace(_lg, i);
-                                    //FD_CLR(i, &_master); // remove from master set
                                 }
-                                //else {
-                                    //send(i, already_login, sizeof already_login, NULL);
-                                //}
-                              
                             }
                             else {
                                 send(i, non, sizeof non, NULL);
                             }
-                        
+                        memset(_buf, 0, sizeof(_buf));
                         _lg.clear();
                         _pw.clear();
                         
