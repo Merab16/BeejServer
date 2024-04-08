@@ -165,7 +165,6 @@ private:
                         FD_CLR(i, &_master); // remove from master set
                         
                     } else {
-
                         bool isLogin = true;
                             for (const auto& ch: _buf) {
                                 if (ch == 0) break;
@@ -227,7 +226,7 @@ private:
     }
 
     bool CheckUser(const std::string& lg, const std::string& pw) {
-        if (_users_from_db.count(lg)) {
+        if (lg != "" && lg != "" && _users_from_db.count(lg)) {
             std::string db_pw = _users_from_db[lg];
             std::cout << db_pw.size() << ' ' << pw.size() << std::endl;
             std::cout << db_pw << ' ' << pw << std::endl;
