@@ -172,16 +172,14 @@ private:
                             
                             char success[] = "-y";
                             char non[] = "-n";
-                            char already_login[] = "User has been already login";
                             if (CheckUser(_lg, _pw)) {
+                            
+                                send(i, success, sizeof success, 0);
+                                _accepted_users.emplace(_lg, i);
                                 
-                                if (!_accepted_users.count(_lg)) {
-                                    send(i, success, sizeof success, NULL);
-                                    _accepted_users.emplace(_lg, i);
-                                }
                             }
                             else {
-                                send(i, non, sizeof non, NULL);
+                                send(i, non, sizeof non, 0);
                             }
                             memset(_buf, 0, sizeof(_buf));
                             _lg.clear();
@@ -217,11 +215,9 @@ private:
     bool CheckUser(const std::string& lg, const std::string& pw) {
         if (lg != "" && lg != "" && _users_from_db.count(lg)) {
             std::string db_pw = _users_from_db[lg];
-            std::cout << db_pw.size() << ' ' << pw.size() << std::endl;
+            //std::cout << db_pw.size() << ' ' << pw.size() << std::endl;
             std::cout << db_pw << ' ' << pw << std::endl;
             return (db_pw == pw);
-            //std::cout << "true\n";
-            //return true;
         }
         return false;
     }
