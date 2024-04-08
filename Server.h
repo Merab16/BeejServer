@@ -165,36 +165,23 @@ private:
                         FD_CLR(i, &_master); // remove from master set
                         
                     } else {
-                        bool isLogin = true;
-                            for (const auto& ch: _buf) {
-                                if (ch == 0) break;
-                                if (ch == ' ') {
-                                    isLogin = false;
-                                    continue;
-                                }
-                                if (isLogin) {
-                                    _lg += ch;
-                                }
-                                else {
-                                    _pw += ch;
-                                }
-
+                        if (_lg.empty())
+                            _lg = _buf;
+                        else 
+                            _pw = _buf; 
+                        char success[] = "-y";
+                        char non[] = "-n";
+                        char already_login[] = "User has been already login";
+                        if (CheckUser(_lg, _pw)) {
+                            
+                            if (!_accepted_users.count(_lg)) {
+                                send(i, success, sizeof success, NULL);
+                                _accepted_users.emplace(_lg, i);
                             }
-                            //std::cout << "Parsed: " << _lg << ' ' << _pw << std::endl;
-
-                            char success[] = "-y";
-                            char non[] = "-n";
-                            char already_login[] = "User has been already login";
-                            if (CheckUser(_lg, _pw)) {
-                                
-                                if (!_accepted_users.count(_lg)) {
-                                    send(i, success, sizeof success, NULL);
-                                    _accepted_users.emplace(_lg, i);
-                                }
-                            }
-                            else {
-                                send(i, non, sizeof non, NULL);
-                            }
+                        }
+                        else {
+                            send(i, non, sizeof non, NULL);
+                        }
                         memset(_buf, 0, sizeof(_buf));
                         _lg.clear();
                         _pw.clear();
